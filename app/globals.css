@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------
+   Wriksh brand CSS variables — mirrored from
+   Catalogues/wriksh_KAR_catalogue/catalogue_KAR_Eng.html so any component
+   that uses a `var(--gold)` reference (in inline styles or third-party
+   CSS) gets the exact same colour as the PDF catalogue.
+   --------------------------------------------------------------------- */
+:root {
+  --linen:        #F4ECDD;
+  --parchment:    #EFE6D2;
+  --parchment-2:  #E9DEC2;
+  --stone:        #C9B98C;
+  --ink:          #1B1812;
+  --ink-soft:     #3A3324;
+  --gold:         #C8932F;
+  --gold-bright:  #E5B14A;
+  --gold-soft:    #D9A441;
+  --clay:         #B8512C;
+  --clay-deep:    #8A3A1E;
+  --umber:        #6E4B25;
+  --moss:         #5C7B3F;
+  --forest:       #2D4521;
+  --rust:         #C7603A;
+  --rust-deep:    #9B4221;
+}
+
+html, body {
+  background: var(--linen);
+  color: var(--ink);
+  font-family: "Spectral", "EB Garamond", Georgia, serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Make the printed wordmark feel Spectral-y even before the web font loads. */
+.font-display {
+  font-family: "Spectral", "EB Garamond", Georgia, serif;
+  letter-spacing: -0.01em;
+}
+.font-body {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+/* Subtle jali-inspired grain — kept identical to the catalogue HTML so the
+   dashboard and the PDF feel like they belong to the same product. */
+.grain {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(201,185,140,0.18) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+}
