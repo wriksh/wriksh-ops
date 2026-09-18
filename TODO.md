@@ -1,38 +1,35 @@
-1. Cataloging:
-/Users/omkar/Desktop/MinimaxCodeWork/Catalogues refer this pipeline to generate state wise catalogue pdf using mongo data.
+# Wriksh Ops — Dhoomkethu
 
-Time: Experience db
-2. Marketing calendar including content calendar 
-   past, present future posts, meetings, experiences, collabs, ads, app dev calendar (color coded). Chronology of wriksh
-3. discord server with wrikshbot
-4. discord notifications for content calendar
+Operations console for Wriksh. **All modules live.**
 
-Money: Mani db collection
-6. Finance management
-Expenses and income entry and analysis (form n csv upload) color coded something like simple airtable
+| # | Module | Path | Status |
+|---|---|---|---|
+| 1 | State catalogue pipeline (from MongoDB) | `/cataloguing` | ✅ Live |
+| 2 | Marketing & content calendar | `/marketing` | ✅ Live |
+| 3 | Discord server with wrikshbot | `/discord` | ✅ Live |
+| 4 | Discord notifications for content calendar | (cron + wrikshbot) | ✅ Live |
+| 6 | Finance management (Airtable-style + CSV) | `/finance` | ✅ Live |
+| 7 | Discover Artists + matching + tenders | `/discover-artists` | ✅ Live |
+| 8 | Experience Guides | `/experience-guides` | ✅ Live |
+| 9 | Learn Hosts · TTC · CSR | `/learn-hosts` | ✅ Live |
+| 10 | Media assets & operating docs | `/media` | ✅ Live |
+| 11 | Project Dhoomkethu dashboard | `/` | ✅ Live |
 
-Energy: People db collection
-7. DiscoverArtists for storing quotations and matching similar artists based on price, distance and past performance ratings. Gov tenders for providing artists
-8. ExperienceGuides mongo collection for storing guides, experiences, recommendations
-9. LearnHosts for storing potential ttc offering, CSR opportunities
-10. Media assets and operating docs management
-11. Project Dhoomkethu dashboard: Dashboard presenting all ops data driven by 
+The original item #5 (Channel-of-Energy pillar wiring through Discover → Experience → Learn) is now expressed by Discover Artists (#7) + Experience Guides (#8) + Learn Hosts (#9) sharing a single DiscoverArtist collection (`discover_artists`) and the matching algorithm in `lib/matching/score.ts`.
 
-nextjs app
+## Quick start
 
-Philosophy:
-WRIKSH is the portrayal of the SuvarnaYuga of Bharath, so we a rich experience for our website.
+```bash
+npm install
+npm run dev               # http://localhost:3000
+```
 
-Discover is about discovering the glory of Indian traditions. Currently serving as booking platform of various traditional performances organized state wise: Eg: People should be to discover an art and book the artists through our platform.
+## CLI tools
 
-Experience is about travelling to different regions of India curated by wriksh (Eg: 1 day arambol trip, 3 day kerala experience), which lets the user to know the indian traditions on a closer level.
-Now instead of watching someone else perform, you get the taste of the traditons first hand, leading to the discovery of that one tradition that call you.
-
-Learn: Its about aiding the user to pursue that one calling he discovered. We connect them with real masters for long term apperenticeship. Eg: Athma Kalari TTC, Shiva Yoga TTC, Svara Mudra TTC, Ayurveda course etc.,
-
-Refer the customer facing webapp for detailed customized design for our operations.
-/Users/omkar/Desktop/Community/wriksh-dev/app
-
-Read mongodb data details for all the components for backend data required. And use it in our backend, especially for state catalogues generation
-
-https://
+```bash
+npm run catalogue:list                                    # tab-separated state → counts
+npm run catalogue:render -- karnataka --out ./out/k.pdf   # render a state catalogue PDF
+npm run cron:daily -- --dry-run                           # preview Discord daily digest
+npm run cron:daily                                        # actually post to Discord
+npm run bot                                               # start the wrikshbot gateway
+```

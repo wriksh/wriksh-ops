@@ -180,7 +180,15 @@ export type DiscordChannelDoc = {
   channelId: string;
   guildId: string;
   purpose: string;
+  /** https://discord.com/api/webhooks/... — treated as a bearer token. */
+  webhookUrl: string;
   notifyCategories: MarketingCategory[];
+  status?: ContentStatus;
+  /** Set every time the daily digest (or manual post) runs. */
+  lastPostedAt?: string;
+  lastPostOk?: boolean;
+  lastPostDurationMs?: number;
+  lastPostNotes?: string | null;
 };
 
 export type FinanceDirection = "in" | "out";
@@ -259,6 +267,7 @@ export type TenderDoc = {
 };
 
 export type ExperienceGuideDoc = {
+  _id?: string;
   slug: string;
   name: string;
   stateSlug: string;
@@ -274,6 +283,7 @@ export type ExperienceGuideDoc = {
 };
 
 export type LearnHostDoc = {
+  _id?: string;
   slug: string;
   name: string;
   type: "ttc" | "csr" | "apprenticeship" | "workshop";

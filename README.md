@@ -32,13 +32,13 @@ Then open <http://localhost:3000> for the Dhoomkethu dashboard, or
 |---|---|---|---|
 | **Dhoomkethu dashboard** | 7 | ✅ Live | `/` |
 | **State catalogue pipeline** | 1 | ✅ Live | `/cataloguing` |
-| **Marketing calendar** | 2 | ⏳ Placeholder | `/marketing` |
-| **Discord · wrikshbot** | 3 | ⏳ Placeholder | `/discord` |
-| **Finance (Money)** | 4 | ⏳ Placeholder | `/finance` |
-| **Discover artists + tenders** | 5 | ⏳ Placeholder | `/discover-artists` |
-| **Experience guides** | 6 | ⏳ Placeholder | `/experience-guides` |
-| **Learn hosts · TTC · CSR** | 6 | ⏳ Placeholder | `/learn-hosts` |
-| **Media assets** | 7 | ⏳ Placeholder | `/media` |
+| **Marketing calendar** | 2 | ✅ Live | `/marketing` |
+| **Discord · wrikshbot** | 3 | ✅ Live | `/discord` |
+| **Finance (Money)** | 4 | ✅ Live | `/finance` |
+| **Discover artists + tenders** | 5 | ✅ Live | `/discover-artists` |
+| **Experience guides** | 6 | ✅ Live | `/experience-guides` |
+| **Learn hosts · TTC · CSR** | 6 | ✅ Live | `/learn-hosts` |
+| **Media assets** | 7 | ✅ Live | `/media` |
 
 ## Architecture
 
@@ -106,3 +106,65 @@ The `.env.local` is shared with `wriksh-dev`:
 | `ADMIN_PASSWORD` | Optional gate on the `/admin/*` routes |
 | `DISCORD_BOT_TOKEN` | Phase 3 |
 | `DISCORD_GUILD_ID` | Phase 3 |
+
+## Discord · wrikshbot (Phase 3)
+
+Two pieces that share the same MongoDB and the same MiniMax wrapper:
+
+| Piece | Purpose | How to run |
+|---|---|---|
+| **Daily reminder cron** | At `DISCORD_CRON_HOUR:MINUTE` every day (default 08:00 IST), assembles "today at Wriksh" from MongoDB, enriches with MiniMax, and POSTs to every `discord_channels` row whose `notifyCategories` overlaps today. | `npm run cron:daily -- --dry-run` (preview) or `npm run cron:daily` (live) |
+| **wrikshbot** | Long-running Discord gateway bot. Registers 5 slash commands (`/today`, `/ask`, `/catalogue`, `/artists`, `/tenders`) on your guild. Also runs the same daily cron in-process via `node-cron`. | `npm run bot` |
+
+### Setting up Discord
+
+1. Go to <https://discord.com/developers/applications> → **New Application** → **Bot** → copy token to `DISCORD_BOT_TOKEN` in `.env.local`.
+2. Copy the **Application ID** to `DISCORD_CLIENT_ID` (used for slash-command registration) and the **Public Key** to `DISCORD_PUBLIC_KEY`.
+3. Right-click your Discord server → **Copy Server ID** → set as `DISCORD_GUILD_ID`.
+4. Invite the bot with `bot` + `applications.commands` scopes.
+5. In each target channel: **Settings → Integrations → Webhooks → New Webhook** → copy URL.
+6. In the wriksh-ops admin UI at `/discord`, click **+ Add channel**, paste the webhook URL, and pick the marketing categories you want notified.
+
+### Triggering the daily cron manually
+
+```bash
+npm run cron:daily -- --dry-run                   # preview without posting
+npm run cron:daily                                # live: posts to all eligible channels
+npm run cron:daily -- --channel ops --dry-run    # only test against the "ops" channel
+
+# HTTP (requires X-Wriksh-Cron-Secret matching DISCORD_CRON_SECRET):
+curl -H "x-wriksh-cron-secret: $DISCORD_CRON_SECRET" \
+     http://localhost:3000/api/discord/cron/daily
+```
+
+Every run is audit-logged in the `cron_jobs` MongoDB collection and surfaced on `/discord`.
+
+### Slash commands
+
+| Command | Description |
+|---|---|
+| `/today` | Today's marketing calendar + finance + recent catalogues — same digest the cron posts, inline. |
+| `/ask <question>` | MiniMax-powered Q&A over live MongoDB context (counts, recent renders, finance summary). |
+| `/catalogue <state>` | Renders a state catalogue PDF and posts it as an attachment. |
+| `/artists [state]` | Lists up to 10 discover artists (optionally filtered by state). |
+| `/tenders` | Lists open government/institutional tenders, sorted by deadline. |
+
+### Deploying to Fly.io
+
+```bash
+# First time only:
+fly launch --no-deploy            # picks up the fly.toml in this repo
+fly secrets set \
+  DISCORD_BOT_TOKEN=... \
+  DISCORD_GUILD_ID=... \
+  DISCORD_PUBLIC_KEY=... \
+  DISCORD_CRON_SECRET=... \
+  WRIKSHBOT_ALLOWED_USER_IDS=... \
+  MINIMAX_API_KEY=... \
+  MONGODB_URI=...
+
+fly deploy
+fly open                          # opens the admin UI in your browser
+```
+
+The bot container runs both `next start` (admin UI on :3000) and `wrikshbot.ts` (gateway + in-process cron).

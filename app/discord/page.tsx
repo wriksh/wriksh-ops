@@ -1,18 +1,41 @@
-import ComingSoon from "@/components/ComingSoon";
+import DiscordAdmin from "@/components/discord/DiscordAdmin";
+import { listDiscordChannels } from "@/lib/collections/discord";
+import { listRecentCronRuns, getLastCronRun } from "@/lib/collections/cron";
 
-export default function DiscordPage() {
+/**
+ * /discord — admin console for Phase 3.
+ *
+ * Server-fetches all data, then hands off to the client component for
+ * interactive CRUD + cron triggering. Bot env flags are passed down as
+ * `NEXT_PUBLIC_*` so the client can render the health card without
+ * leaking the actual token.
+ */
+export default async function DiscordAdminPage() {
+  const [channels, recentRuns, lastRun] = await Promise.all([
+    listDiscordChannels(),
+    listRecentCronRuns(10),
+    getLastCronRun("daily-reminder"),
+  ]);
+
+  // Surface the same env flags to the client (true/false, not the values).
+  const botEnv = {
+    hasBotToken: !!process.env.DISCORD_BOT_TOKEN,
+    guildId: process.env.DISCORD_GUILD_ID ?? "",
+    cronHour: process.env.DISCORD_CRON_HOUR ?? "8",
+    cronMinute: process.env.DISCORD_CRON_MINUTE ?? "0",
+    cronTz: process.env.DISCORD_CRON_TZ ?? "Asia/Kolkata",
+    hasCronSecret: !!process.env.DISCORD_CRON_SECRET,
+    allowedUserCount: (process.env.WRIKSHBOT_ALLOWED_USER_IDS ?? "")
+      .split(",")
+      .filter((s) => s.trim().length > 0).length,
+  };
+
   return (
-    <ComingSoon
-      title="Discord · wrikshbot"
-      phase="Phase 3"
-      pillar="Time"
-      description="A Discord bot that mirrors the marketing calendar into the team's channels, posts event reminders, and gives members a `/catalogue <state>` slash command to pull a catalogue PDF on demand."
-      bullets={[
-        "Discord channel registry stored in `discord_channels`",
-        "Auto-post calendar reminders to the matching channel",
-        "Slash commands: `/catalogue`, `/finance`, `/artists`",
-        "Channel-level opt-in per marketing category",
-      ]}
+    <DiscordAdmin
+      channels={channels}
+      recentRuns={recentRuns}
+      lastRun={lastRun ?? null}
+      botEnv={botEnv}
     />
   );
 }

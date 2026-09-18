@@ -1,18 +1,10 @@
-import ComingSoon from "@/components/ComingSoon";
+import { listMediaAssets, listBuckets } from "@/lib/collections/media";
+import MediaClient from "@/components/media/MediaClient";
 
-export default function MediaPage() {
-  return (
-    <ComingSoon
-      title="Media Assets & Operating Docs"
-      phase="Phase 7"
-      pillar="Energy"
-      description="Every photo, video, document, and audio file the team uses — searchable, taggable, and tied to states, events, and experiences. Backed by the same Vercel Blob store the customer-facing app uses."
-      bullets={[
-        "Photo / video / doc / audio asset registry",
-        "Tag + bucket organisation (e.g. `marketing/site/hero`)",
-        "Caption, alt text, and credit on every asset",
-        "Connects to Dhoomkethu for asset usage analytics",
-      ]}
-    />
-  );
+export default async function MediaPage() {
+  const [assets, buckets] = await Promise.all([
+    listMediaAssets(),
+    listBuckets(),
+  ]);
+  return <MediaClient initialAssets={assets} buckets={buckets} />;
 }

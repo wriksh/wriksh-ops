@@ -32,13 +32,13 @@ type NavItem = {
 const items: NavItem[] = [
   { href: "/", label: "Dhoomkethu", icon: HiOutlineHome },
   { href: "/cataloguing", label: "Cataloguing", icon: HiOutlineDocumentText, badge: "Live" },
-  { href: "/marketing", label: "Marketing Calendar", icon: HiOutlineCalendar, badge: "Soon" },
-  { href: "/discord", label: "Discord · wrikshbot", icon: HiOutlineChatAlt2, badge: "Soon" },
-  { href: "/finance", label: "Finance", icon: HiOutlineCurrencyRupee, badge: "Soon" },
-  { href: "/discover-artists", label: "Discover Artists", icon: HiOutlineUserGroup, badge: "Soon" },
-  { href: "/experience-guides", label: "Experience Guides", icon: HiOutlineMap, badge: "Soon" },
-  { href: "/learn-hosts", label: "Learn Hosts", icon: HiOutlineAcademicCap, badge: "Soon" },
-  { href: "/media", label: "Media Assets", icon: HiOutlinePhotograph, badge: "Soon" },
+  { href: "/marketing", label: "Marketing Calendar", icon: HiOutlineCalendar, badge: "Live" },
+  { href: "/discord", label: "Discord · wrikshbot", icon: HiOutlineChatAlt2, badge: "Live" },
+  { href: "/finance", label: "Finance", icon: HiOutlineCurrencyRupee, badge: "Live" },
+  { href: "/discover-artists", label: "Discover Artists", icon: HiOutlineUserGroup, badge: "Live" },
+  { href: "/experience-guides", label: "Experience Guides", icon: HiOutlineMap, badge: "Live" },
+  { href: "/learn-hosts", label: "Learn Hosts", icon: HiOutlineAcademicCap, badge: "Live" },
+  { href: "/media", label: "Media Assets", icon: HiOutlinePhotograph, badge: "Live" },
 ];
 
 export default function SideNav() {

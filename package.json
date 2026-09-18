@@ -13,13 +13,18 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "catalogue:list": "tsx --tsconfig scripts/tsconfig.json --env-file=.env.local scripts/catalogue_list.ts",
-    "catalogue:render": "tsx --tsconfig scripts/tsconfig.json --env-file=.env.local scripts/catalogue_render.ts"
+    "catalogue:render": "tsx --tsconfig scripts/tsconfig.json --env-file=.env.local scripts/catalogue_render.ts",
+    "cron:daily": "tsx --tsconfig scripts/tsconfig.json --env-file=.env.local scripts/cron_daily.ts",
+    "bot": "tsx --tsconfig scripts/tsconfig.json --env-file=.env.local scripts/wrikshbot.ts"
   },
   "dependencies": {
     "@react-pdf/renderer": "^3.4.5",
     "@vercel/blob": "^2.8.0",
+    "discord.js": "^14.27.0",
+    "dotenv": "^18.0.0",
     "mongodb": "^7.5.0",
     "next": "14.2.35",
+    "node-cron": "^4.6.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.2.1",
