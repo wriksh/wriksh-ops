@@ -16,6 +16,20 @@ npm install
 # 3. dev server
 npm run dev
 
+## Library
+
+The unified `/library` tab holds every knowledge asset the team uses.
+
+- **Repo docs** — Markdown under `docs/**.md`, git-tracked. Tags are
+  inferred from path (`docs/operations/runbook.md` → `#operations`) plus
+  optional front-matter (`tags: [oncall, finance]`).
+- **Uploads** — anything you drop on the page goes to Vercel Blob via
+  `POST /api/library/upload`. Metadata lands in MongoDB's `media_assets`
+  collection. Tags, bucket, caption and credit are written alongside.
+
+Search uses a BM25-lite scorer (title 3×, tag 2×, heading 2.5×, body 1×)
+across the merged index. Build time: <50 ms for ~500 entries.
+
 # 4. catalogue sanity check
 npm run catalogue:list
 
@@ -38,7 +52,12 @@ Then open <http://localhost:3000> for the Dhoomkethu dashboard, or
 | **Discover artists + tenders** | 5 | ✅ Live | `/discover-artists` |
 | **Experience guides** | 6 | ✅ Live | `/experience-guides` |
 | **Learn hosts · TTC · CSR** | 6 | ✅ Live | `/learn-hosts` |
-| **Media assets** | 7 | ✅ Live | `/media` |
+| **Library** (repo docs + uploaded media) | 7 | ✅ Live | `/library` |
+
+The previous separate **Media** + **Docs** tabs have been unified into the
+single **Library** tab. Repo-tracked Markdown lives in `docs/**.md`;
+uploaded media lives in Vercel Blob with metadata in MongoDB. Both
+surface in the same searchable index.
 
 ## Architecture
 

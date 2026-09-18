@@ -11,7 +11,7 @@ import {
   HiOutlineUserGroup,
   HiOutlineMap,
   HiOutlineAcademicCap,
-  HiOutlinePhotograph,
+  HiOutlineBookOpen,
 } from "react-icons/hi";
 
 /**
@@ -38,7 +38,7 @@ const items: NavItem[] = [
   { href: "/discover-artists", label: "Discover Artists", icon: HiOutlineUserGroup, badge: "Live" },
   { href: "/experience-guides", label: "Experience Guides", icon: HiOutlineMap, badge: "Live" },
   { href: "/learn-hosts", label: "Learn Hosts", icon: HiOutlineAcademicCap, badge: "Live" },
-  { href: "/media", label: "Media Assets", icon: HiOutlinePhotograph, badge: "Live" },
+  { href: "/library", label: "Library", icon: HiOutlineBookOpen, badge: "Live" },
 ];
 
 export default function SideNav() {

@@ -12,8 +12,13 @@ Operations console for Wriksh. **All modules live.**
 | 7 | Discover Artists + matching + tenders | `/discover-artists` | ✅ Live |
 | 8 | Experience Guides | `/experience-guides` | ✅ Live |
 | 9 | Learn Hosts · TTC · CSR | `/learn-hosts` | ✅ Live |
-| 10 | Media assets & operating docs | `/media` | ✅ Live |
+| 10 | Media assets & operating docs | `/library` (unified) | ✅ Live |
 | 11 | Project Dhoomkethu dashboard | `/` | ✅ Live |
+
+The unified **Library** tab (`/library`) replaced the original separate
+**Media** + **Docs** tabs. It merges git-tracked Markdown in `docs/`
+with uploaded media assets (Vercel Blob + `media_assets` Mongo
+collection) into one searchable, taggable index.
 
 The original item #5 (Channel-of-Energy pillar wiring through Discover → Experience → Learn) is now expressed by Discover Artists (#7) + Experience Guides (#8) + Learn Hosts (#9) sharing a single DiscoverArtist collection (`discover_artists`) and the matching algorithm in `lib/matching/score.ts`.
 

@@ -38,9 +38,10 @@ export async function listMediaAssets(filter?: {
         { caption: { $regex: filter.q, $options: "i" } },
       ];
     }
+    // Keep `_id` so callers can reference it (Library index, detail pages).
     const docs = await db
       .collection<RawDoc>(COLLECTION)
-      .find(q, { projection: { _id: 0 } })
+      .find(q)
       .sort({ uploadedAt: -1 })
       .limit(500)
       .toArray();

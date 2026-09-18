@@ -302,7 +302,9 @@ export type LearnHostDoc = {
 export type MediaAssetDoc = {
   _id?: string;
   title: string;
-  kind: "photo" | "video" | "doc" | "audio";
+  /** "photo" | "video" | "doc" | "pdf" | "audio" — the `pdf` variant
+   *  was added with the Library unification. */
+  kind: "photo" | "video" | "doc" | "pdf" | "audio";
   url: string;
   thumbnailUrl?: string;
   stateSlug?: string;

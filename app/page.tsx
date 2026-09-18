@@ -192,16 +192,28 @@ export default async function DhoomkethuPage() {
       </section>
 
       <section className="rounded-2xl border border-stone/40 bg-parchment p-6">
-        <p className="font-body text-[10px] uppercase tracking-[0.28em] text-gold">
-          Media library
-        </p>
-        <h3 className="mt-1 font-display text-xl text-ink">{media} assets archived</h3>
-        <p className="mt-3 max-w-2xl font-body text-sm text-ink-soft">
-          The Phase 7 media library will hold every photo, video, document,
-          and audio file the team uses — searchable, taggable, and tied to
-          states, events, and experiences. Storage uses the same Vercel
-          Blob store as the customer-facing app.
-        </p>
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="font-body text-[10px] uppercase tracking-[0.28em] text-gold">
+              Library
+            </p>
+            <h3 className="mt-1 font-display text-xl text-ink">
+              {media} uploaded asset{media === 1 ? "" : "s"} + repo docs
+            </h3>
+            <p className="mt-3 max-w-2xl font-body text-sm text-ink-soft">
+              The unified Library holds every photo, video, document, audio
+              file, and Markdown runbook the team uses — searchable by
+              tag, bucket, or full-text query. Uploaded media lives in
+              Vercel Blob; repo docs are git-tracked alongside the code.
+            </p>
+          </div>
+          <Link
+            href="/library"
+            className="rounded-full bg-forest px-4 py-2 font-body text-xs uppercase tracking-[0.24em] text-linen hover:bg-clay"
+          >
+            Open Library →
+          </Link>
+        </div>
       </section>
     </div>
   );
