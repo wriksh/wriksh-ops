@@ -49,15 +49,13 @@ Then open <http://localhost:3000> for the Dhoomkethu dashboard, or
 | **Marketing calendar** | 2 | ✅ Live | `/marketing` |
 | **Discord · wrikshbot** | 3 | ✅ Live | `/discord` |
 | **Finance (Money)** | 4 | ✅ Live | `/finance` |
-| **Discover artists + tenders** | 5 | ✅ Live | `/discover-artists` |
-| **Experience guides** | 6 | ✅ Live | `/experience-guides` |
-| **Learn hosts · TTC · CSR** | 6 | ✅ Live | `/learn-hosts` |
+| **People** (artists · guides · hosts · gov · vendors · team) | 5/6 | ✅ Live | `/people` |
 | **Library** (repo docs + uploaded media) | 7 | ✅ Live | `/library` |
 
-The previous separate **Media** + **Docs** tabs have been unified into the
-single **Library** tab. Repo-tracked Markdown lives in `docs/**.md`;
-uploaded media lives in Vercel Blob with metadata in MongoDB. Both
-surface in the same searchable index.
+The three earlier tabs (`/discover-artists`, `/experience-guides`,
+`/learn-hosts`) have been unified into a single **`/people`** tab with a
+tag-driven contact database. Old routes 308-redirect to
+`/people?role=<role>`.
 
 ## Architecture
 

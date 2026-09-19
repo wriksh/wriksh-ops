@@ -1,7 +1,5 @@
-import { listExperienceGuides } from "@/lib/collections/experienceGuides";
-import ExperienceGuidesClient from "@/components/guides/ExperienceGuidesClient";
+import { permanentRedirect } from "next/navigation";
 
-export default async function ExperienceGuidesPage() {
-  const guides = await listExperienceGuides();
-  return <ExperienceGuidesClient initialGuides={guides} />;
+export default function ExperienceGuidesRedirect() {
+  permanentRedirect("/people?role=guide");
 }

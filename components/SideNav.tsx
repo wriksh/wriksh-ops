@@ -8,9 +8,7 @@ import {
   HiOutlineCalendar,
   HiOutlineChatAlt2,
   HiOutlineCurrencyRupee,
-  HiOutlineUserGroup,
-  HiOutlineMap,
-  HiOutlineAcademicCap,
+  HiOutlineUsers,
   HiOutlineBookOpen,
 } from "react-icons/hi";
 
@@ -35,9 +33,7 @@ const items: NavItem[] = [
   { href: "/marketing", label: "Marketing Calendar", icon: HiOutlineCalendar, badge: "Live" },
   { href: "/discord", label: "Discord · wrikshbot", icon: HiOutlineChatAlt2, badge: "Live" },
   { href: "/finance", label: "Finance", icon: HiOutlineCurrencyRupee, badge: "Live" },
-  { href: "/discover-artists", label: "Discover Artists", icon: HiOutlineUserGroup, badge: "Live" },
-  { href: "/experience-guides", label: "Experience Guides", icon: HiOutlineMap, badge: "Live" },
-  { href: "/learn-hosts", label: "Learn Hosts", icon: HiOutlineAcademicCap, badge: "Live" },
+  { href: "/people", label: "People", icon: HiOutlineUsers, badge: "Live" },
   { href: "/library", label: "Library", icon: HiOutlineBookOpen, badge: "Live" },
 ];
 

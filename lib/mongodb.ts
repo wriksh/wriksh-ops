@@ -74,6 +74,8 @@ export const COLLECTIONS = {
   learnHosts: "learn_hosts",
   mediaAssets: "media_assets",
   tenders: "tenders",
+  // Unified People — replaces discoverArtists/experienceGuides/learnHosts
+  people: "people",
 } as const;
 
 export type CollectionName = (typeof COLLECTIONS)[keyof typeof COLLECTIONS];

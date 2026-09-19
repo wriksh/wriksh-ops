@@ -107,7 +107,7 @@ export async function updateDiscoverArtist(
       .collection<RawArtist>(ARTISTS)
       .findOneAndUpdate(
         { slug },
-        { $set: next },
+        { $set: next as Partial<Omit<DiscoverArtistDoc, "_id">> },
         { returnDocument: "after", projection: { _id: 0 } }
       );
     return (result as unknown as DiscoverArtistDoc) ?? null;

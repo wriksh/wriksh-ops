@@ -1,15 +1,5 @@
-import { listDiscoverArtists, listTenders } from "@/lib/collections/artists";
-import DiscoverArtistsClient from "@/components/artists/DiscoverArtistsClient";
+import { permanentRedirect } from "next/navigation";
 
-export default async function DiscoverArtistsPage() {
-  const [artists, tenders] = await Promise.all([
-    listDiscoverArtists(),
-    listTenders(),
-  ]);
-  return (
-    <DiscoverArtistsClient
-      artists={artists}
-      tenders={tenders}
-    />
-  );
+export default function DiscoverArtistsRedirect() {
+  permanentRedirect("/people?role=artist");
 }

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { listDiscoverArtists } from "@/lib/collections/artists";
+import { listPeople } from "@/lib/collections/people";
 import { matchArtists, type MatchBrief } from "@/lib/matching/score";
 import { logger } from "@/lib/logger";
 
@@ -8,6 +8,10 @@ import { logger } from "@/lib/logger";
  *
  * Body: { artForms: string[], budgetINR?: number, cityHint?: string, coords?: [lng, lat] }
  * Returns: top 5 matched artists with score + reasons.
+ *
+ * Source: the unified `people` collection, filtered to role=artist. The
+ * legacy `discover_artists` collection stays for backward compat with
+ * the old page (now redirected) and the Discord bot.
  */
 export async function POST(req: Request) {
   try {
@@ -18,7 +22,7 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-    const pool = await listDiscoverArtists();
+    const pool = await listPeople({ roles: ["artist"], limit: 500 });
     const results = matchArtists(body, pool, 5);
     logger.info("matching.run", {
       poolSize: pool.length,

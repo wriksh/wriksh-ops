@@ -16,7 +16,21 @@
  * across the remaining signals so we never divide by zero.
  */
 
-import type { DiscoverArtistDoc } from "@/lib/types";
+import type { DiscoverArtistDoc, PersonDoc } from "@/lib/types";
+
+/**
+ * The matcher accepts anything with the relevant artist-shaped fields.
+ * Works with both the legacy `DiscoverArtistDoc` and the unified
+ * `PersonDoc` (when the person has the artist role).
+ */
+export type MatchableArtist = Pick<
+  DiscoverArtistDoc | PersonDoc,
+  "slug" | "name" | "stateSlug" | "city" | "artForms" | "priceRange" | "location" | "ratings"
+> & {
+  // Person-only — the matcher treats these identically.
+  bio?: string;
+  contact?: unknown;
+};
 
 const WEIGHTS = {
   price: 0.4,
@@ -35,7 +49,7 @@ export type MatchBrief = {
 };
 
 export type MatchResult = {
-  artist: DiscoverArtistDoc;
+  artist: MatchableArtist;
   /** 0..1 composite score. */
   score: number;
   /** Individual component scores for the breakdown UI. */
@@ -64,13 +78,16 @@ function haversineKm(a: [number, number], b: [number, number]): number {
   return 2 * R * Math.asin(Math.sqrt(x));
 }
 
-function avgRating(artist: DiscoverArtistDoc): number {
+function avgRating(artist: MatchableArtist): number {
   if (!artist.ratings?.length) return 0;
-  const sum = artist.ratings.reduce((s, r) => s + (r.score ?? 0), 0);
+  const sum = artist.ratings.reduce(
+    (s: number, r: { score?: number }) => s + (r.score ?? 0),
+    0
+  );
   return sum / artist.ratings.length;
 }
 
-function normalisedPriceScore(artist: DiscoverArtistDoc, budget: number | undefined): number {
+function normalisedPriceScore(artist: MatchableArtist, budget: number | undefined): number {
   if (budget == null) return 0.5;
   const range = artist.priceRange;
   if (!range) return 0.5;
@@ -80,24 +97,24 @@ function normalisedPriceScore(artist: DiscoverArtistDoc, budget: number | undefi
   return Math.max(0, Math.min(1, 1 - delta / 0.5));
 }
 
-function normalisedDistanceScore(artist: DiscoverArtistDoc, coords: [number, number] | undefined): number {
+function normalisedDistanceScore(artist: MatchableArtist, coords: [number, number] | undefined): number {
   if (!coords) return 0.5;
   if (!artist.location?.coordinates) return 0.5;
   const km = haversineKm(coords, artist.location.coordinates);
   return Math.max(0, Math.min(1, 1 - km / 1500));
 }
 
-function normalisedRatingScore(artist: DiscoverArtistDoc): number {
+function normalisedRatingScore(artist: MatchableArtist): number {
   const r = avgRating(artist);
   if (r === 0) return 0.5;
   return Math.max(0, Math.min(1, r / 5));
 }
 
-function artFormScore(artist: DiscoverArtistDoc, wanted: string[]): number {
+function artFormScore(artist: MatchableArtist, wanted: string[]): number {
   if (!wanted.length) return 0.5;
   const have = artist.artForms ?? [];
-  const matched = wanted.filter((w) =>
-    have.some((h) => h.toLowerCase().includes(w.toLowerCase()))
+  const matched = wanted.filter((w: string) =>
+    have.some((h: string) => h.toLowerCase().includes(w.toLowerCase()))
   ).length;
   if (matched === 0) return 0;
   return matched / wanted.length;
@@ -105,7 +122,7 @@ function artFormScore(artist: DiscoverArtistDoc, wanted: string[]): number {
 
 export function matchArtists(
   brief: MatchBrief,
-  pool: DiscoverArtistDoc[],
+  pool: MatchableArtist[],
   limit = 5
 ): MatchResult[] {
   const wantPrice = brief.budgetINR != null;

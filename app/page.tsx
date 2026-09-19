@@ -87,10 +87,10 @@ export default async function DhoomkethuPage() {
           tone={finance.thisMonth.net >= 0 ? "moss" : "rust"}
           href="/finance"
         />
-        <KpiTile label="Discover artists" value={artists} sub="verified vendors on the platform" tone="rust" href="/discover-artists" />
-        <KpiTile label="Open tenders" value={tenders.open} sub={`${tenders.total} total tracked`} tone="gold" href="/discover-artists" />
-        <KpiTile label="Experience guides" value={guides} sub="trip leaders & curators" tone="moss" href="/experience-guides" />
-        <KpiTile label="Learn hosts · TTC · CSR" value={hosts} sub="potential apprenticeship hosts" tone="umber" href="/learn-hosts" />
+        <KpiTile label="Discover artists" value={artists} sub="verified vendors on the platform" tone="rust" href="/people?role=artist" />
+        <KpiTile label="Open tenders" value={tenders.open} sub={`${tenders.total} total tracked`} tone="gold" href="/people?role=artist" />
+        <KpiTile label="Experience guides" value={guides} sub="trip leaders & curators" tone="moss" href="/people?role=guide" />
+        <KpiTile label="Learn hosts · TTC · CSR" value={hosts} sub="potential apprenticeship hosts" tone="umber" href="/people?role=host" />
       </section>
 
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">

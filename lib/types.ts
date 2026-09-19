@@ -229,6 +229,7 @@ export type ArtistRatingDoc = {
 };
 
 export type DiscoverArtistDoc = {
+  _id?: string;
   slug: string;
   name: string;
   stateSlug: string;
@@ -297,6 +298,81 @@ export type LearnHostDoc = {
   contact?: { phone?: string; email?: string; website?: string };
   coverImage?: string;
   status?: ContentStatus;
+};
+
+/**
+ * Unified People / Contacts document.
+ *
+ * Replaces the three separate collections (`discover_artists`,
+ * `experience_guides`, `learn_hosts`) with one tagged contact record.
+ *
+ * Every role-specific field is optional. `tags` is the heart of the
+ * unification — it carries the facet values ("discover", "experience",
+ * "learn", "government", "vendor", "team", plus free-form tags like
+ * state slugs, art forms, languages, etc).
+ *
+ * Search-by-tag + search-by-skill: `stateSlug`, `artForms`, `languages`
+ * are also indexed for fast filtering on the /people page.
+ */
+export type PersonRole = "artist" | "guide" | "host" | "government" | "vendor" | "team";
+
+export type PersonContact = {
+  phone?: string;
+  email?: string;
+  website?: string;
+  address?: string;
+};
+
+export type PersonDoc = {
+  _id?: string;
+  /** URL-safe slug. */
+  slug: string;
+  name: string;
+  /** Discriminated role tags — one person can be many. */
+  roles: PersonRole[];
+  /** Free-form tags: state slugs, art forms, languages, departments, etc. */
+  tags: string[];
+  stateSlug?: string;
+  city?: string;
+  location?: { type: "Point"; coordinates: [number, number] };
+
+  /** Bio / notes. */
+  bio?: string;
+
+  /** Contact info — single source of truth per person. */
+  contact: PersonContact;
+
+  coverImage?: string;
+  status?: ContentStatus;
+  source?: "manual" | "wriksh-onboarding" | "csv" | "tender";
+  verifiedNote?: string;
+  links?: { label: string; href: string }[];
+
+  // ---- Artist-specific ----
+  artForms?: string[];
+  pastPerformances?: { eventSlug?: string; date: string; venue?: string; rating?: number }[];
+  quotations?: ArtistQuotationDoc[];
+  ratings?: ArtistRatingDoc[];
+  priceRange?: { min: number; max: number; currency?: "INR" };
+
+  // ---- Guide-specific ----
+  languages?: string[];
+  certifications?: string[];
+  experiences?: string[];
+  /** Average guide rating (single number) — distinct from the artist `ratings[]`. */
+  rating?: number;
+
+  // ---- Host-specific ----
+  hostType?: "ttc" | "csr" | "apprenticeship" | "workshop";
+  duration?: string;
+  feeINR?: number;
+  prerequisites?: string;
+  description?: string;
+  /** Host-specific single art form (guides also use `artForms`). */
+  artForm?: string;
+
+  // ---- Misc ----
+  updatedAt?: string;
 };
 
 export type MediaAssetDoc = {

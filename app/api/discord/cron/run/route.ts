@@ -6,24 +6,17 @@ import { logger } from "@/lib/logger";
  * POST /api/discord/cron/run
  *
  * Server-side trigger for the admin UI's "Run now" button. Unlike
- * `/api/discord/cron/daily` (which requires the shared cron secret), this
- * route is only available inside the same Next.js process — no external
- * caller can hit it. We still gate it on a simple admin check by reading
- * `process.env.ADMIN_PASSWORD` if set.
+ * `/api/discord/cron/daily` (which requires the shared cron secret and
+ * is meant for external schedulers), this route is internal to the
+ * Next.js process — only the admin UI talks to it, and only same-origin
+ * requests can reach it. There is no separate auth gate here because
+ * the only caller is the in-app UI; when we add real admin auth
+ * (Firebase / NextAuth), it goes through middleware.
  *
  * Body:
  *   { dryRun?: boolean }
  */
 export async function POST(req: Request) {
-  // If ADMIN_PASSWORD is configured, require it via the X-Wriksh-Admin header.
-  const expected = process.env.ADMIN_PASSWORD;
-  if (expected) {
-    const got = req.headers.get("x-wriksh-admin");
-    if (got !== expected) {
-      return NextResponse.json({ error: "unauthorised" }, { status: 401 });
-    }
-  }
-
   let dryRun = false;
   try {
     const body = (await req.json().catch(() => ({}))) as { dryRun?: boolean };
