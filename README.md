@@ -1,4 +1,5 @@
-# Wriksh Ops · Project Dhoomkethu
+# Wriksh Ops 
+# Project Dhoomkethu
 
 Operations console for Wriksh — state catalogue pipeline, marketing calendar,
 finance, and discover-artist ops. A standalone Next.js 14 app that shares the
