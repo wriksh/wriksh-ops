@@ -5,8 +5,11 @@ import type { NextRequest } from "next/server";
  * Shared-password gate for the Wriksh ops console (Dhoomkethu).
  *
  * Mirrors the behaviour of `wriksh-dev`'s /admin gate:
- *   - Every page and every /api/* route requires a valid `wriksh_ops_admin`
- *     cookie EXCEPT the login page itself and the login/logout API routes.
+ *   - Every page and most /api/* routes require a valid `wriksh_ops_admin`
+ *     cookie.
+ *   - Public webhook + cron endpoints are allowlisted below — they carry
+ *     their own strong auth (Ed25519 signature, Bearer secret, or
+ *     same-origin check), so they don't need the cookie.
  *   - On a missing/invalid cookie:
  *       * Pages are redirected to /login?next=<original path>.
  *       * API routes return { ok: false, reason: "unauthorized" } with 401.
@@ -25,16 +28,40 @@ const LOGIN_PATH = "/login";
 const LOGIN_API = "/api/auth/login";
 const LOGOUT_API = "/api/auth/logout";
 
+/**
+ * Public API endpoints that must bypass the admin-cookie gate.
+ *
+ * Each entry's own auth scheme (verified inside the route handler):
+ *   - `/api/discord/interactions`        → Ed25519 signature (Discord)
+ *   - `/api/discord/register-commands`   → same-origin check
+ *   - `/api/discord/cron/*`              → `Authorization: Bearer DISCORD_CRON_SECRET`
+ *   - `/api/cron/discord-categorize`     → `Authorization: Bearer DISCORD_CRON_SECRET`
+ *   - `/api/cron/channel-health`         → `Authorization: Bearer DISCORD_CRON_SECRET`
+ *
+ * IMPORTANT: keep this list explicit. Adding a path here means "the
+ * route handler is solely responsible for auth."
+ */
+const PUBLIC_API_PATHS: readonly string[] = [
+  LOGIN_API,
+  LOGOUT_API,
+  "/api/discord/interactions",
+  "/api/discord/register-commands",
+];
+
+function isPublicApiPath(pathname: string): boolean {
+  if (PUBLIC_API_PATHS.includes(pathname)) return true;
+  // Allow-list cron subroutes by prefix.
+  if (pathname.startsWith("/api/discord/cron/")) return true;
+  if (pathname.startsWith("/api/cron/")) return true;
+  return false;
+}
+
 export function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
 
   // --- Public allow-list ---------------------------------------------------
-  // Skip the login screen + its API pair; otherwise redirect to /login.
-  if (
-    pathname === LOGIN_PATH ||
-    pathname === LOGIN_API ||
-    pathname === LOGOUT_API
-  ) {
+  // Skip the login screen, its API pair, and the public webhook/cron routes.
+  if (pathname === LOGIN_PATH || isPublicApiPath(pathname)) {
     return NextResponse.next();
   }
 

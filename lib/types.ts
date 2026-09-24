@@ -555,3 +555,105 @@ export type MediaAssetDoc = {
   uploadedBy?: string;
   uploadedAt: string;
 };
+
+// ---------------------------------------------------------------------------
+// Discord categorization (Phase 12 — Jev categorization cron)
+// ---------------------------------------------------------------------------
+
+/** Fixed label set for Jev's Discord-message categorization. */
+export const DISCORD_MESSAGE_CATEGORIES = [
+  "marketing",
+  "finance",
+  "catalogue",
+  "people",
+  "library",
+  "infra",
+  "memoir",
+  "coordination",
+  "support",
+  "noise",
+] as const;
+
+export type DiscordMessageCategory = (typeof DISCORD_MESSAGE_CATEGORIES)[number];
+
+/** One categorized Discord message — written by the 09:00 IST cron. */
+export type DiscordMessageCategoryDoc = {
+  _id?: string;
+  /** Discord message snowflake. */
+  messageId: string;
+  /** `discord_channels.slug` we ingested this from. */
+  channelSlug: string;
+  /** `discord_channels.channelId` for cross-reference. */
+  channelId: string;
+  authorId: string;
+  authorName: string;
+  /** UTC ISO timestamp of the original message. */
+  messageTs: string;
+  /** Original message content (may be truncated to 500 chars). */
+  content: string;
+  /** Jev's picked label. */
+  category: DiscordMessageCategory;
+  /** 0–1 Jev confidence. */
+  confidence: number;
+  /** `jev-1.x.y` — which model version tagged this. */
+  jevModel?: string;
+  /** If true, low confidence and the row landed in the review queue. */
+  needsReview: boolean;
+  classifiedAt: string;
+};
+
+/** Aggregated daily Discord report (one per day per channel-set). */
+export type DiscordMessageReportDoc = {
+  _id?: string;
+  /** YYYY-MM-DD in `DISCORD_CRON_TZ`. */
+  date: string;
+  /** ISO timestamp at which the 24h window starts (UTC). */
+  windowStart: string;
+  /** ISO timestamp at which the 24h window ends (UTC). */
+  windowEnd: string;
+  totalMessages: number;
+  channelsProcessed: number;
+  /** category → count */
+  byCategory: Partial<Record<DiscordMessageCategory, number>>;
+  /** category → top author IDs */
+  topAuthors: Partial<Record<DiscordMessageCategory, { authorId: string; authorName: string; count: number }[]>>;
+  /** category → top channel slugs */
+  topChannels: Partial<Record<DiscordMessageCategory, { channelSlug: string; count: number }[]>>;
+  /** MiniMax-generated 4–6 sentence Wriksh-voiced summary. */
+  summary?: string;
+  /** Whether the summary came from MiniMax or a hand-written fallback. */
+  llmSource: "minimax" | "fallback";
+  /** Jev model version used for categorization. */
+  jevModel?: string;
+  /** Total Jev calls made (one per message). */
+  jevCalls: number;
+  /** Total estimated Jev cost in USD. */
+  jevCostUsd?: number;
+  /** Where the report was posted (channel ID). */
+  postedToChannelId?: string;
+  generatedAt: string;
+  /** "cron" for the 09:00 IST run, "command" for `/categorize-now`. */
+  generatedBy: "cron" | "command" | "manual";
+};
+
+/** Single slash-command invocation log row. */
+export type DiscordInteractionLogDoc = {
+  _id?: string;
+  interactionId: string;
+  command: string;
+  userId?: string;
+  username?: string;
+  guildId?: string;
+  channelId?: string;
+  ok: boolean;
+  durationMs: number;
+  /** How the response was delivered. */
+  source:
+    | "public"
+    | "ephemeral"
+    | "deferred"
+    | "ephemeral-deferred"
+    | "denied"
+    | "error";
+  loggedAt: string;
+};

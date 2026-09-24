@@ -1,0 +1,16 @@
+{
+  "crons": [
+    {
+      "path": "/api/discord/cron/daily",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/cron/discord-categorize",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/channel-health",
+      "schedule": "0 */6 * * *"
+    }
+  ]
+}

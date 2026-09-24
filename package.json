@@ -15,7 +15,8 @@
     "catalogue:list": "tsx --tsconfig scripts/tsconfig.json --env-file=.env.local scripts/catalogue_list.ts",
     "catalogue:render": "tsx --tsconfig scripts/tsconfig.json --env-file=.env.local scripts/catalogue_render.ts",
     "cron:daily": "tsx --tsconfig scripts/tsconfig.json --env-file=.env.local scripts/cron_daily.ts",
-    "bot": "tsx --tsconfig scripts/tsconfig.json --env-file=.env.local scripts/wrikshbot.ts",
+    "cron:categorize": "tsx --tsconfig scripts/tsconfig.json --env-file=.env.local scripts/discord_categorize.ts",
+    "jev:smoke": "tsx --tsconfig scripts/tsconfig.json --env-file=.env.local scripts/jev_smoke.ts",
     "migrate:people": "tsx --tsconfig scripts/tsconfig.json --env-file=.env.local scripts/migrate_people.ts"
   },
   "dependencies": {
