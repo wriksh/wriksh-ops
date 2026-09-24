@@ -53,7 +53,7 @@ export default async function CataloguingIndexPage() {
               <th className="px-5 py-3 font-normal">Region</th>
               <th className="px-5 py-3 font-normal">Tagline</th>
               <th className="px-5 py-3 font-normal">Last render</th>
-              <th className="px-5 py-3 font-normal text-right">Action</th>
+              <th className="px-5 py-3 font-normal text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -89,12 +89,32 @@ export default async function CataloguingIndexPage() {
                     )}
                   </td>
                   <td className="px-5 py-3 text-right">
-                    <Link
-                      href={`/cataloguing/${s.slug}`}
-                      className="inline-block rounded-full border border-gold px-3 py-1 font-body text-[11px] uppercase tracking-wider text-gold hover:bg-gold hover:text-linen"
-                    >
-                      Generate
-                    </Link>
+                    <div className="flex flex-wrap justify-end gap-2">
+                      <Link
+                        href={`/cataloguing/${s.slug}`}
+                        className="inline-block rounded-full border border-gold px-3 py-1 font-body text-[11px] uppercase tracking-wider text-gold hover:bg-gold hover:text-linen"
+                      >
+                        Catalogue
+                      </Link>
+                      <a
+                        href={`/api/catalogue/${s.slug}/experiences/pdf`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block rounded-full border border-moss px-3 py-1 font-body text-[11px] uppercase tracking-wider text-moss hover:bg-moss hover:text-linen"
+                        title={`Open the experiences PDF for ${s.name}`}
+                      >
+                        Experiences
+                      </a>
+                      <a
+                        href={`/api/catalogue/${s.slug}/learn/pdf`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block rounded-full border border-clay px-3 py-1 font-body text-[11px] uppercase tracking-wider text-clay hover:bg-clay hover:text-linen"
+                        title={`Open the learn PDF for ${s.name}`}
+                      >
+                        Learn
+                      </a>
+                    </div>
                   </td>
                 </tr>
               );

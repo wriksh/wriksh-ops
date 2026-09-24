@@ -143,4 +143,146 @@ export const catalogueStyles = StyleSheet.create({
     marginRight: 4, marginBottom: 4,
     fontSize: 7.5, color: C.inkSoft, letterSpacing: 0.5,
   },
+
+  // ---------------------------------------------------------------------
+  // Per-experience / per-learn detail-page styles
+  //
+  // Each experience / learn entry is rendered as a 2-page spread: page 1
+  // is the cover image + title + meta strip; page 2 is the body content
+  // (story, schedule, includes, FAQs, …). All values still pin to the
+  // Wriksh brand palette via the WRIKSH_BRAND lookup above.
+  // ---------------------------------------------------------------------
+  detailImageWrap: {
+    backgroundColor: C.parchment2,
+    borderRadius: 4,
+    marginBottom: 14,
+    overflow: "hidden",
+  },
+  detailImage: {
+    width: "100%",
+    height: 280,
+    objectFit: "cover",
+  },
+  detailImagePlaceholder: {
+    width: "100%",
+    height: 280,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: C.stone,
+  },
+  detailImagePlaceholderText: {
+    fontSize: 11,
+    letterSpacing: 2,
+    textTransform: "uppercase",
+    color: C.umber,
+  },
+  detailTitle: {
+    fontSize: 24,
+    fontFamily: catalogueFonts.bold,
+    color: C.ink,
+    lineHeight: 1.15,
+    marginBottom: 4,
+  },
+  detailCity: {
+    fontSize: 10,
+    letterSpacing: 1.5,
+    textTransform: "uppercase",
+    color: C.gold,
+    marginBottom: 8,
+  },
+  detailMetaRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+    marginBottom: 10,
+  },
+  detailMetaChip: {
+    backgroundColor: C.parchment2,
+    borderRadius: 8,
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    fontSize: 8,
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    color: C.inkSoft,
+  },
+  detailSection: { marginTop: 12, marginBottom: 10 },
+  detailSectionEyebrow: {
+    fontSize: 8,
+    letterSpacing: 3,
+    color: C.gold,
+    marginBottom: 4,
+    textTransform: "uppercase",
+  },
+  detailSectionTitle: {
+    fontSize: 13,
+    fontFamily: catalogueFonts.bold,
+    color: C.ink,
+    marginBottom: 4,
+  },
+  detailParagraph: {
+    fontSize: 9.5,
+    color: C.inkSoft,
+    lineHeight: 1.5,
+    marginBottom: 6,
+  },
+  bulletRow: {
+    flexDirection: "row",
+    marginBottom: 3,
+  },
+  bulletDot: {
+    width: 10,
+    fontSize: 9.5,
+    color: C.gold,
+  },
+  bulletText: {
+    flex: 1,
+    fontSize: 9.5,
+    color: C.inkSoft,
+    lineHeight: 1.45,
+  },
+  scheduleRow: {
+    flexDirection: "row",
+    marginBottom: 6,
+    borderBottomWidth: 0.4,
+    borderBottomColor: C.stone,
+    paddingBottom: 5,
+  },
+  scheduleLabel: {
+    width: 90,
+    fontSize: 8.5,
+    fontFamily: catalogueFonts.bold,
+    color: C.gold,
+    letterSpacing: 1,
+    textTransform: "uppercase",
+  },
+  scheduleBody: { flex: 1, fontSize: 9.5, color: C.inkSoft, lineHeight: 1.45 },
+  faqQ: {
+    fontFamily: catalogueFonts.bold,
+    fontSize: 10,
+    color: C.ink,
+    marginBottom: 2,
+  },
+  faqA: { fontSize: 9.5, color: C.inkSoft, lineHeight: 1.45, marginBottom: 6 },
+  reviewCard: {
+    backgroundColor: C.parchment,
+    borderRadius: 4,
+    padding: 8,
+    borderWidth: 0.4,
+    borderColor: C.stone,
+    marginBottom: 6,
+  },
+  reviewQuote: {
+    fontFamily: catalogueFonts.italic,
+    fontSize: 9.5,
+    color: C.ink,
+    lineHeight: 1.45,
+    marginBottom: 3,
+  },
+  reviewAttribution: {
+    fontSize: 7.5,
+    letterSpacing: 1,
+    textTransform: "uppercase",
+    color: C.umber,
+  },
 });

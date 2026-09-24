@@ -32,11 +32,18 @@ export async function GET(
     // Fire-and-forget audit log; never block the response on it.
     void recordCatalogueJob({
       stateSlug,
+      pdfKind: "state-catalogue",
       generatedBy: req.headers.get("x-wriksh-user") ?? "anonymous",
       durationMs: -1, // overwritten below — we don't have the exact timing here
       byteSize: buffer.byteLength,
       notes: `traditions=${traditionCount}, festivals=${festivalCount}, providers=${providerCount}`,
-    }).catch((err) => logger.warn("catalogue_jobs.recordFailed", { stateSlug, reason: String(err) }));
+    }).catch((err) =>
+      logger.warn("catalogue_jobs.recordFailed", {
+        stateSlug,
+        pdfKind: "state-catalogue",
+        reason: String(err),
+      })
+    );
 
     // Buffer extends Uint8Array in modern Node, so `new Uint8Array(buffer)`
     // is the safest cross-runtime conversion before handing bytes to Web

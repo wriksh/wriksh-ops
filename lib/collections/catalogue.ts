@@ -5,6 +5,7 @@ import type {
   CatalogueOverrideDoc,
   CatalogueSectionSlug,
   CatalogueJobDoc,
+  CataloguePdfKind,
   ContentStatus,
 } from "@/lib/types";
 
@@ -88,13 +89,21 @@ export async function upsertCatalogueOverride(
 export async function recordCatalogueJob(
   job: Omit<CatalogueJobDoc, "generatedAt">
 ): Promise<void> {
-  return logger.timed("catalogue_jobs.record", { stateSlug: job.stateSlug }, async () => {
-    const db = await getDb();
-    await db.collection<CatalogueJobDoc>("catalogue_jobs").insertOne({
-      ...job,
-      generatedAt: new Date().toISOString(),
-    });
-  });
+  return logger.timed(
+    "catalogue_jobs.record",
+    { stateSlug: job.stateSlug, pdfKind: job.pdfKind ?? "state-catalogue" },
+    async () => {
+      const db = await getDb();
+      await db.collection<CatalogueJobDoc>("catalogue_jobs").insertOne({
+        ...job,
+        // Legacy callers (the original state-catalogue PDF route) don't pass
+        // pdfKind; we back-fill it so the per-tab render-history tables can
+        // filter cleanly.
+        pdfKind: job.pdfKind ?? ("state-catalogue" as CataloguePdfKind),
+        generatedAt: new Date().toISOString(),
+      });
+    }
+  );
 }
 
 export async function listRecentCatalogueJobs(limit = 20): Promise<CatalogueJobDoc[]> {

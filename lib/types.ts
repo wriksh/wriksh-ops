@@ -96,6 +96,150 @@ export type FestivalDoc = {
   status?: ContentStatus;
 };
 
+
+// ---------------------------------------------------------------------------
+// Mirror types for the Experiences and Learn collections on wriksh-dev.
+//
+// Both collections live on the shared Mongo cluster. They are READ-ONLY
+// here — wriksh-ops only consumes them to render PDFs and analytics
+// surfaces. Admin CRUD lives in wriksh-dev.
+//
+// We declare only the fields we actually read in the catalogue PDF renderer
+// (and the dashboard). Anything else is ignored on purpose so the schema
+// can drift in wriksh-dev without breaking ops.
+// ---------------------------------------------------------------------------
+
+export type ExperienceType =
+  | "workshop"
+  | "immersion"
+  | "retreat"
+  | "residency"
+  | "trip";
+
+export type ExperienceGroupType = "private" | "group" | "both";
+
+export type ExperienceFaq = { q: string; a: string };
+export type ExperienceReview = {
+  name: string;
+  quote: string;
+  rating: number;
+};
+export type ExperienceScheduleItem = {
+  /** e.g. "Day 1 morning", "Day 2 evening". */
+  label: string;
+  body: string;
+};
+export type ExperienceCarouselItem = {
+  kind: "image" | "video";
+  url: string;
+  caption?: string;
+};
+
+export type ExperienceDoc = {
+  slug: string;
+  title: string;
+  stateSlug: string;
+  city: string;
+  categoryIds: string[];
+  type: ExperienceType;
+  durationLabel: string;
+  durationDays: number;
+  groupType: ExperienceGroupType;
+  priceINR: number;
+  priceUnit: "person" | "group";
+  compareAtPriceINR?: number;
+  includes: string[];
+  excludes: string[];
+  providerSlugs?: string[];
+  heroTheme: string;
+  /** Real cover image URL — used directly in the PDF cover. */
+  coverImage?: string;
+  story: string;
+  whyThisMatters: string;
+  culturalBackground: string;
+  schedule: ExperienceScheduleItem[];
+  difficulty: string;
+  difficultyLevel: "Easy" | "Moderate" | "Demanding";
+  ageSuitability: string;
+  prepInstructions: string[];
+  carousel?: ExperienceCarouselItem[];
+  faqs: ExperienceFaq[];
+  reviews: ExperienceReview[];
+  featured?: boolean;
+  tags?: string[];
+  metaTitle?: string;
+  metaDescription?: string;
+  status?: ContentStatus;
+};
+
+export type LearnLeadTeacher = {
+  name: string;
+  role: string;
+  bio: string;
+  image?: string;
+};
+
+export type LearnCohortDate = {
+  startDate: string;
+  endDate?: string;
+  published?: boolean;
+  notes?: string;
+};
+
+export type LearnGalleryItem = {
+  url: string;
+  caption?: string;
+};
+
+export type LearnDoc = {
+  slug: string;
+  title: string;
+  stateSlug: string;
+  city: string;
+  categoryIds: string[];
+  programKind: "course" | "ttc" | "residency" | "retreat";
+  durationLabel: string;
+  durationDays: number;
+  groupType: ExperienceGroupType;
+  priceINR: number;
+  priceUnit: "person" | "group";
+  currency?: string;
+  accommodationIncluded?: boolean;
+  includes: string[];
+  excludes: string[];
+  providerSlugs?: string[];
+  heroTheme: string;
+  /** Real cover image URL — used directly in the PDF cover. */
+  coverImage?: string;
+  story: string;
+  whyThisMatters: string;
+  culturalBackground: string;
+  schedule: ExperienceScheduleItem[];
+  difficulty: string;
+  difficultyLevel: "Easy" | "Moderate" | "Demanding";
+  ageSuitability: string;
+  prepInstructions: string[];
+  whatToBring: string[];
+  gallery?: LearnGalleryItem[];
+  carousel?: ExperienceCarouselItem[];
+  faqs: ExperienceFaq[];
+  reviews: ExperienceReview[];
+  language: string[];
+  prerequisites: string[];
+  certification?: string;
+  leadTeacher: LearnLeadTeacher;
+  intakeSize?: number;
+  cohortDates: LearnCohortDate[];
+  cancellationPolicy: string;
+  depositINR?: number;
+  depositPercent?: number;
+  featured?: boolean;
+  tags?: string[];
+  metaTitle?: string;
+  metaDescription?: string;
+  status?: ContentStatus;
+};
+
 // ---------------------------------------------------------------------------
 // 2. Ops types — new collections owned by wriksh-ops
 // ---------------------------------------------------------------------------
@@ -122,6 +266,23 @@ export type CatalogueOverrideDoc = {
   updatedAt?: string;
 };
 
+/**
+ * Which kind of PDF a given `catalogue_jobs` row represents.
+ *
+ * Kept as a string-literal union (not the same as the experience marketing
+ * category enum) because the PDF generator is its own axis — the catalogue
+ * PDF, the experiences PDF, and the learn PDF are three siblings under the
+ * same audit-log table. Existing rows without this field are treated as
+ * `state-catalogue` for backwards compatibility.
+ */
+export type CataloguePdfKind = "state-catalogue" | "experiences" | "learn";
+
+export const CATALOGUE_PDF_KIND_LABELS: Record<CataloguePdfKind, string> = {
+  "state-catalogue": "State Catalogue",
+  experiences: "Experiences",
+  learn: "Learn",
+};
+
 export type CatalogueJobDoc = {
   stateSlug: string;
   generatedBy: string;
@@ -131,6 +292,8 @@ export type CatalogueJobDoc = {
   byteSize?: number;
   fileUrl?: string;
   notes?: string;
+  /** Discriminator — defaults to "state-catalogue" on legacy rows. */
+  pdfKind?: CataloguePdfKind;
 };
 
 export type MarketingCategory =
