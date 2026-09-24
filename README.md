@@ -5,7 +5,7 @@ Operations console for Wriksh — state catalogue pipeline, marketing calendar,
 finance, and discover-artist ops. A standalone Next.js 14 app that shares the
 same MongoDB cluster as the customer-facing `wriksh-dev` Next.js app.
 
-## Quick start
+## Quick Start
 
 ```bash
 # 1. install
