@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import SideNav from "@/components/SideNav";
-import TopBar from "@/components/TopBar";
 
+/**
+ * Root layout — bare <html><body> shell only.
+ *
+ * The actual chrome (SideNav + TopBar) lives in `app/(ops)/layout.tsx`,
+ * which wraps every ops page EXCEPT /login. /login renders inside this
+ * bare shell so its UI isn't competing with the dashboard nav.
+ *
+ * The Spectral + Inter font links stay here so both the login screen and
+ * the ops chrome inherit them.
+ */
 export const metadata: Metadata = {
   title: "Wriksh Ops · Dhoomkethu",
   description:
@@ -30,13 +38,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-linen text-ink font-body">
-        <div className="flex min-h-screen">
-          <SideNav />
-          <div className="flex flex-1 flex-col">
-            <TopBar />
-            <main className="flex-1 p-8">{children}</main>
-          </div>
-        </div>
+        {children}
       </body>
     </html>
   );

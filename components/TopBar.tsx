@@ -1,10 +1,15 @@
 import Link from "next/link";
+import AdminLogoutButton from "@/components/AdminLogoutButton";
 
 /**
- * Top bar — wordmark + breadcrumb + project tag.
+ * Top bar — wordmark + breadcrumb + project tag + sign-out.
  *
- * Kept server-side; no state needed. The "wriksh-dev" link in the top
- * right is the only escape hatch back to the customer-facing app.
+ * Kept server-side except for the logout button (which is a client
+ * component because it does a fetch + router navigation).
+ *
+ * The "wriksh.com" link is the only escape hatch back to the customer-
+ * facing site; the "Sign out" button drops the ops session cookie and
+ * routes back to /login.
  */
 export default function TopBar() {
   return (
@@ -27,6 +32,8 @@ export default function TopBar() {
         >
           wriksh.com ↗
         </Link>
+        <span className="hidden h-4 w-px bg-stone/60 sm:inline-block" />
+        <AdminLogoutButton />
       </div>
     </header>
   );
